@@ -17,3 +17,15 @@ originalDataTestPaths = [
         (originalDataPath + "enron4/test/ham")
         ]
 completeVocabPath = (projectDataPath + "completeVocab.csv")
+enronVocabPaths = [
+        (projectDataPath + "enron1Vocab.csv"),
+        (projectDataPath + "enron2Vocab.csv"),
+        (projectDataPath + "enron4Vocab.csv"),
+]
+# 0 coresponds to global and then 1-3 to ther respective enrons
+globalVocabSizes = [
+        24189,
+        8815,
+        9070,
+        16506
+]

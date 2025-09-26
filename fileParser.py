@@ -1,5 +1,5 @@
 #%%
-from constants import originalDataPath, projectDataPath, originalDataTrainingPaths, completeVocabPath, originalDataTestPaths
+from constants import originalDataPath, projectDataPath, originalDataTrainingPaths, completeVocabPath, originalDataTestPaths, enronVocabPaths
 import os
 
 # %%
@@ -36,14 +36,64 @@ def constructVocabulary():
                     else:
                         vocabulary[token] = 1
 
-    print(vocabulary.__len__())
+    print("complete vocab size: ",vocabulary.__len__())
     for token in vocabulary:
         vocabularyFile.write(token + ",")
+    
+    #parsing the vocab for individual enrons
+    enron = 0
+    for currentDirecotry in originalDataTrainingPaths:
+        if ("/enron1/train/spam" in currentDirecotry):
+            currentFile = open(projectDataPath + "enron1Vocab.csv", "w")
+            enron = 1
+            vocabulary = dict()
+        elif ("/enron2/train/spam" in currentDirecotry):
+            currentFile = open(projectDataPath + "enron2Vocab.csv", "w")  
+            enron = 2
+            vocabulary = dict()
+        elif ("/enron4/train/spam" in currentDirecotry):
+            currentFile = open(projectDataPath + "enron4Vocab.csv", "w")
+            enron = 4
+            vocabulary = dict()
+        elif ("/enron1/train/ham" in currentDirecotry):
+            currentFile = open(projectDataPath + "enron1Vocab.csv", "a")
+            enron = 1
+        elif ("/enron2/train/ham" in currentDirecotry):
+            currentFile = open(projectDataPath + "enron2Vocab.csv", "a")
+            enron = 2
+        elif ("/enron4/train/ham" in currentDirecotry):
+            currentFile = open(projectDataPath + "enron4Vocab.csv", "a")
+            enron = 4
+            
+        listOfFilesInCurrDirecotry = os.listdir(currentDirecotry)
+
+        for file in listOfFilesInCurrDirecotry:
+            currentOpenFile = open(currentDirecotry + "/" + file)
+            singleLine = " "
+            while singleLine != '':
+                
+                #some emails have non unicode chars, this skips it
+                try:
+                    singleLine = currentOpenFile.readline()
+                except:
+                    continue
+
+                singleLineTokens = cleanSingleLine(singleLine)
+                for token in singleLineTokens:
+                    if(token in vocabulary):
+                        vocabulary[token] += 1
+                    else:
+                        vocabulary[token] = 1
+
+        print("enron" + str(enron) + " vocab size:",vocabulary.__len__())
+        for token in vocabulary:
+            currentFile.write(token + ",")
+
 
 
 #%%
 #function to take in a single sentnece and return an array of tokens.
-#@perams: a single line of text 
+#@perams: a single line of text as a string
 #@returns: an array of tokens with cleaned inputs
 def cleanSingleLine(singleLine):
     #send all chars to lower case and performs other replacements on the sentence
@@ -82,9 +132,6 @@ def cleanSingleLine(singleLine):
 
 #this function takes the complete vocab and produces a csv with every email as a row and the count of each word in each email.
 def BOWDataCreator():
-    #initializing the vocabDictionaries we will be using for thisfunction
-    vocabDict = createVocabDict()
-    individualVocabDict = createVocabDict()
     
     # creating an array with all of the testing and training data paths
     allPaths = [originalDataTrainingPaths, originalDataTestPaths]
@@ -103,6 +150,16 @@ def BOWDataCreator():
                 currentFile = open(projectDataPath + "enron2_bow_test.csv", "a")
             elif ("/enron4/test" in currentDirecotry):
                 currentFile = open(projectDataPath + "enron4_bow_test.csv", "a")
+            
+            if ('1' in currentDirecotry):
+                vocabDict = createVocabDict(1)
+                individualVocabDict = createVocabDict(1)
+            elif ('2' in currentDirecotry):
+                vocabDict = createVocabDict(2)
+                individualVocabDict = createVocabDict(2)
+            elif ('4' in currentDirecotry):
+                vocabDict = createVocabDict(3)
+                individualVocabDict = createVocabDict(3)
 
             # gets list of current files in the directory
             listOfFilesInCurrDirecotry = os.listdir(currentDirecotry)
@@ -144,21 +201,47 @@ def BOWDataCreator():
 
 
 # this function returns a dictionary of all the unique vocab words all initialized to 0
-def createVocabDict():
+#@peram: takes in a number 0-3 coresponging to completeVocab, enron1vocab, enron2vocab, and enron3vocab
+def createVocabDict(set):
     vocabDict = dict()
-    vocabFile = open(completeVocabPath)
-    onlyLine = vocabFile.readline()
-    splitOnlyLine = onlyLine.split(",")
+    
+    match set:
+        case 0: 
+            vocabFile = open(completeVocabPath)
+            onlyLine = vocabFile.readline()
+            splitOnlyLine = onlyLine.split(",")
+        case 1:
+            vocabFile = open(enronVocabPaths[set-1])
+            onlyLine = vocabFile.readline()
+            splitOnlyLine = onlyLine.split(",")
+        case 2:
+            vocabFile = open(enronVocabPaths[set-1])
+            onlyLine = vocabFile.readline()
+            splitOnlyLine = onlyLine.split(",")
+        case 3:
+            vocabFile = open(enronVocabPaths[set-1])
+            onlyLine = vocabFile.readline()
+            splitOnlyLine = onlyLine.split(",")
+
+
     for token in splitOnlyLine:
         vocabDict[token] = 0
+            
     return vocabDict
 
 #this function creates empty BOW files with the complete header
 def createBOWFiles():
     names = ["enron1_bow_train.csv","enron2_bow_train.csv", "enron4_bow_train.csv","enron1_bow_test.csv","enron2_bow_test.csv","enron4_bow_test.csv"]
-    vocabDict = createVocabDict()
     for name in names:
         currentFile = open(projectDataPath + name, "w")
+        
+        if ('1' in name):
+            vocabDict = createVocabDict(1)
+        elif ('2' in name):
+            vocabDict = createVocabDict(2)
+        elif ('4' in name):
+            vocabDict = createVocabDict(3)
+
         for token in vocabDict:
             if(token == ""):
                 continue
@@ -169,9 +252,18 @@ def createBOWFiles():
 
 def createBernouliFiles():
     names = ["enron1_bernoulli_train.csv", "enron1_bernoulli_test.csv","enron2_bernoulli_train.csv","enron2_bernoulli_test.csv","enron4_bernoulli_train.csv","enron4_bernoulli_test.csv"]
-    vocabDict = createVocabDict()
+    vocabDict = createVocabDict(0)
     for name in names:
         currentFile = open(projectDataPath + name, "w")
+
+        if ('1' in name):
+            vocabDict = createVocabDict(1)
+        elif ('2' in name):
+            vocabDict = createVocabDict(2)
+        elif ('4' in name):
+            vocabDict = createVocabDict(3)
+
+
         for token in vocabDict:
             if(token == ""):
                 continue
@@ -181,9 +273,6 @@ def createBernouliFiles():
         currentFile.close()
 
 def bernouliDataCreator():
-    #initializing the vocabDictionaries we will be using for thisfunction
-    vocabDict = createVocabDict()
-    individualVocabDict = createVocabDict()
     
     # creating an array with all of the testing and training data paths
     allPaths = [originalDataTrainingPaths, originalDataTestPaths]
@@ -202,6 +291,18 @@ def bernouliDataCreator():
                 currentFile = open(projectDataPath + "enron2_bernoulli_test.csv", "a")
             elif ("/enron4/test" in currentDirecotry):
                 currentFile = open(projectDataPath + "enron4_bernoulli_test.csv", "a")
+
+
+            if ('1' in currentDirecotry):
+                vocabDict = createVocabDict(1)
+                individualVocabDict = createVocabDict(1)
+            elif ('2' in currentDirecotry):
+                vocabDict = createVocabDict(2)
+                individualVocabDict = createVocabDict(2)
+            elif ('4' in currentDirecotry):
+                vocabDict = createVocabDict(3)
+                individualVocabDict = createVocabDict(3)
+
 
             # gets list of current files in the directory
             listOfFilesInCurrDirecotry = os.listdir(currentDirecotry)
@@ -243,7 +344,7 @@ def bernouliDataCreator():
 # %%
 # constructVocabulary()
 # BOWDataCreator()
-# bernouliDataCreator()
+bernouliDataCreator()
 # %%
 # createBOWFiles()
 # createBernouliFiles()
