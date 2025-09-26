@@ -1,6 +1,5 @@
 #%%
-import numpy as np
-from constants import originalDataPath, debug, projectDataPath, originalDataTrainingPaths, completeVocabPath, originalDataTestPaths
+from constants import originalDataPath, projectDataPath, originalDataTrainingPaths, completeVocabPath, originalDataTestPaths
 import os
 
 # %%
@@ -182,7 +181,7 @@ def createBernouliFiles():
         currentFile.close()
 
 def bernouliDataCreator():
-     #initializing the vocabDictionaries we will be using for thisfunction
+    #initializing the vocabDictionaries we will be using for thisfunction
     vocabDict = createVocabDict()
     individualVocabDict = createVocabDict()
     

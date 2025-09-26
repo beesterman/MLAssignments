@@ -17,4 +17,3 @@ originalDataTestPaths = [
         (originalDataPath + "enron4/test/ham")
         ]
 completeVocabPath = (projectDataPath + "completeVocab.csv")
-debug = 1
