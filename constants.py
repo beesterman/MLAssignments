@@ -32,10 +32,13 @@ enronBOWTestPaths = [
         (projectDataPath + "enron2_bow_test.csv"),
         (projectDataPath + "enron4_bow_test.csv")
 ]
-# 0 coresponds to global and then 1-3 to ther respective enrons
-globalVocabSizes = [
-        24174,
-        8805,
-        9069,
-        16495
+enronBerTrainPaths = [
+        (projectDataPath + "enron1_bernoulli_train.csv"),
+        (projectDataPath + "enron2_bernoulli_train.csv"),
+        (projectDataPath + "enron4_bernoulli_train.csv"),
+]
+enronBerTestPaths = [
+        (projectDataPath + "enron1_bernoulli_test.csv"),
+        (projectDataPath + "enron2_bernoulli_test.csv"),
+        (projectDataPath + "enron4_bernoulli_test.csv")
 ]

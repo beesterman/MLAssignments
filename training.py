@@ -60,7 +60,7 @@ def calculatePriors(set):
 #this returns a dictionary of the words and thier occourances per set and classnum
 #@peram takes the enron number that you would like (1-3), you also input the class num (1 for spam 0 for nonspam)
 #@return returns a dictionary with all of the words and thier counts for that class
-def getCountOfTokenOccouranceInTrainDataPerClass(set, classNum):
+def getCountOfTokenOccouranceInTrainDataPerClassBOW(set, classNum):
     match set:
         case 1:
             BOWFilePath = constants.enronBOWTrainPaths[0]
@@ -121,14 +121,14 @@ def getTotalTextValue(set, classNum):
 #@peram takes in the token set number and class number
 #@return returns the log probability of that individual token
 def calculateProbOfToken(tokenind, set, classNum, lenOfVocab, textOccourPerClass):
-    numerator = getCountOfTokenOccouranceInTrainDataPerClass(tokenind, set, classNum) + 1
+    numerator = getCountOfTokenOccouranceInTrainDataPerClassBOW(tokenind, set, classNum) + 1
     denominator = textOccourPerClass + lenOfVocab
     return np.log2(numerator / denominator)
 
 #this function gives back the classification of a single email
 #@peram takes in the non split token array of a single email
 #@return returns the classification of the given email
-def classifySingleEmail(email, set, dictOfSpamOccour, dictOfNotSpamOccour):
+def classifySingleEmailBOW(email, set, dictOfSpamOccour, dictOfNotSpamOccour):
     tokenArray = email.split(",")
     actualClass = tokenArray[-1].replace("\n","")
     tokenArray.pop()
@@ -148,7 +148,7 @@ def classifySingleEmail(email, set, dictOfSpamOccour, dictOfNotSpamOccour):
                 sumHold = dictOfSpamOccour[vocabArr[ind]]
             except:
                 sumHold = 0
-            sumOfIndProbs += np.log2(((sumHold + 1)/ (textOccurPerClass + vocabLen)) * int(tokenArray[ind]))
+            sumOfIndProbs += np.log2(((sumHold + 1)/ (textOccurPerClass + vocabLen)))
     probOfSpam = np.log2(priorArr[0]) + sumOfIndProbs
     # print("this is the prob of spam: ", probOfSpam)
 
@@ -165,7 +165,7 @@ def classifySingleEmail(email, set, dictOfSpamOccour, dictOfNotSpamOccour):
                 sumHold = dictOfNotSpamOccour[vocabArr[ind]]
             except:
                 sumHold = 0
-            sumOfIndProbs += np.log2(((sumHold + 1)/ (textOccurPerClass + vocabLen)) * int(tokenArray[ind]))
+            sumOfIndProbs += np.log2(((sumHold + 1)/ (textOccurPerClass + vocabLen)))
     probOfNonSpam = np.log2(priorArr[1]) + sumOfIndProbs
     # print("this is the prob of ham: ", probOfSpam)
 
@@ -179,12 +179,12 @@ def classifySingleEmail(email, set, dictOfSpamOccour, dictOfNotSpamOccour):
 #this function takes in a single BOW file and returns the correct and totoal
 #@peram takes in the non split token array of a single email
 #@return returns the classification of the given email
-def classifyGivenData(bowFile, set):
+def classifyGivenDataBOW(bowFile, set):
     currentFile = open(bowFile)
     singleLine = currentFile.readline()
 
-    spamOccour = getCountOfTokenOccouranceInTrainDataPerClass(set, 1)
-    notSpamOccour = getCountOfTokenOccouranceInTrainDataPerClass(set, 0)
+    spamOccour = getCountOfTokenOccouranceInTrainDataPerClassBOW(set, 1)
+    notSpamOccour = getCountOfTokenOccouranceInTrainDataPerClassBOW(set, 0)
 
     actualAmmountOfSpam = totalNumberOfSpam(bowFile)
 
@@ -197,7 +197,132 @@ def classifyGivenData(bowFile, set):
         singleLine = currentFile.readline()
         if(singleLine == ''):
             break
-        resultArr = classifySingleEmail(singleLine, 1, spamOccour, notSpamOccour)
+        resultArr = classifySingleEmailBOW(singleLine, set, spamOccour, notSpamOccour)
+        print("what it predicted: " + str(resultArr[0]) + " what it was: " + str(resultArr[1]))
+        
+        totalEmails += 1
+
+        if(resultArr[0] == resultArr[1]):
+            correctEmails += 1
+        if(resultArr[0] == 1):
+            predictedAsSpam += 1
+        if(resultArr[0] == 1 and resultArr[1] == 1):
+            correctSpamEmails += 1
+    
+    print(totalEmails)
+    print(correctEmails)
+    print(predictedAsSpam)
+    print(correctSpamEmails)
+    print(actualAmmountOfSpam)
+    
+
+    finalReport(set, totalEmails, correctEmails, predictedAsSpam, correctSpamEmails, actualAmmountOfSpam)
+
+
+#this returns a dictionary of the words and thier occourances per set and classnum
+#@peram takes the enron number that you would like (1-3), you also input the class num (1 for spam 0 for nonspam)
+#@return returns a dictionary with all of the words and thier counts for that class
+def getCountOfTokenOccouranceInTrainDataPerClassBurnoulli(set, classNum):
+    match set:
+        case 1:
+            BrFilePath = constants.enronBerTrainPaths[0]
+        case 2:
+            BrFilePath = constants.enronBerTrainPaths[1]
+        case 3:
+            BrFilePath = constants.enronBerTrainPaths[2]
+
+    vocabArray = createVocabArray(set)
+    vocabDict = createVocabDict(set)
+    totalOccourances = 0
+
+
+    totalOccourances = 0
+    BrFile = open(BrFilePath)
+    singleline = BrFile.readline()
+
+    while singleline != '':
+        singleline = BrFile.readline()
+        if singleline == '':
+            break
+        singleline = singleline.split(",")
+        singleline[-1] = singleline[-1].replace("\n","")
+        if singleline[-1] == str(classNum):
+            for inc in range(0, len(singleline)- 1):
+                if(singleline[inc] == '1'):
+                    vocabDict[vocabArray[inc]] += 1
+
+    return vocabDict
+
+#this function gives back the classification of a single email from a Bernoulii file
+#@peram takes in the non split token array of a single email
+#@return returns the classification of the given email
+def classifySingleEmailBurnoulli(email, set, dictOfSpamOccour, dictOfNotSpamOccour, numberOfSpam, numberOfNotSpam):
+    tokenArray = email.split(",")
+    actualClass = tokenArray[-1].replace("\n","")
+    tokenArray.pop()
+    priorArr = calculatePriors(set)
+    vocabArr = createVocabArray(set)
+
+    #calculating the sum of all the log probs of the email for spam
+    sumOfIndProbs = 0
+    vocabLen = getLenOfVocab(set)
+
+    for ind in range(0,len(tokenArray)):
+        if int(tokenArray[ind]) > 0:
+            # this is the Num of occourances in class + 1/number of documents in class +2
+            #this gives a 0 for unknown words
+            try:
+                sumHold = dictOfSpamOccour[vocabArr[ind]]
+            except:
+                sumHold = 0
+            sumOfIndProbs += np.log2(((sumHold + 1)/ (numberOfSpam + 2)))
+    probOfSpam = np.log2(priorArr[0]) + sumOfIndProbs
+    print("this is the prob of spam: ", probOfSpam)
+
+    #calculating the sum of all the log probs of a email for not spam
+    sumOfIndProbs = 0
+    
+
+    for ind in range(0,len(tokenArray)):
+        if int(tokenArray[ind]) > 0:
+            # this is the Num of occourances in class + 1/number of documents in class +2
+            #this gives a 0 for unknown words
+            try:
+                sumHold = dictOfNotSpamOccour[vocabArr[ind]]
+            except:
+                sumHold = 0
+            sumOfIndProbs += np.log2(((sumHold + 1)/ (numberOfNotSpam + 2)))
+    probOfNonSpam = np.log2(priorArr[1]) + sumOfIndProbs
+    print("this is the prob of ham: ", probOfSpam)
+
+    if probOfSpam > probOfNonSpam:
+        return [1,int(actualClass)]
+    else:
+        return [0,int(actualClass)]
+    
+#this function takes in a single Ber file and returns the correct and totoal
+#@peram takes in the non split token array of a single email
+#@return returns the classification of the given email
+def classifyGivenDataBernoulli(BrFile, set):
+    currentFile = open(BrFile)
+    singleLine = currentFile.readline()
+
+    spamOccour = getCountOfTokenOccouranceInTrainDataPerClassBurnoulli(set, 1)
+    notSpamOccour = getCountOfTokenOccouranceInTrainDataPerClassBurnoulli(set, 0)
+
+    actualAmmountOfSpam = totalNumberOfSpam(BrFile)
+    totalAmmountOfNonSpam = totalNumberOfNotSpam(BrFile)
+
+    totalEmails = 0
+    correctEmails = 0
+    correctSpamEmails = 0
+    predictedAsSpam = 0
+
+    while True:
+        singleLine = currentFile.readline()
+        if(singleLine == ''):
+            break
+        resultArr = classifySingleEmailBurnoulli(singleLine, set, spamOccour, notSpamOccour, actualAmmountOfSpam, totalAmmountOfNonSpam)
         print("what it predicted: " + str(resultArr[0]) + " what it was: " + str(resultArr[1]))
         
         totalEmails += 1
@@ -222,7 +347,8 @@ def classifyGivenData(bowFile, set):
 
 
 
-    #this ourputs a final report for a given set of inputs
+#this fumction takes in all the perameters for the final report and then writes it to the relevant file in the projectdata folder
+#@peram takes in set, total emails, correct emails, number of emails predicted as spam, number of emails correctly predicted as spam, and the actuall count of spam
 def finalReport(set, totalEmails, correctEmails, predictedAsSpam, correctSpamEmails, actualAmmountOfSpam):
     acuracy = correctEmails / totalEmails
     precision = correctSpamEmails / predictedAsSpam
@@ -255,21 +381,28 @@ def totalNumberOfSpam(csv):
 
     return count
 
-# calculatePriors(1)
-# getCountOfTokenOccouranceInTrainDataPerClass(1, 0)
-# getLenOfVocab(0)
-# getLenOfVocab(1)
-# getLenOfVocab(2)
-# getLenOfVocab(3)
-# getTotalTextValue(1, 1)
-# calculateProbOfToken(0, 1, 1)
-# file = open(constants.enronBOWTrainPaths[0])
-# singleline = file.readline()
-# singleline = file.readline()
-# singleline = file.readline()
-# singleline = file.readline()
-# print("email class: " ,classifySingleEmail(singleline, 1))
-classifyGivenData(constants.enronBOWTestPaths[2], 3)
-# totalNumberOfSpam(constants.enronBOWTestPaths[0])
-# finalReport(1,450,437,118,118,131)
+def totalNumberOfNotSpam(csv):
+    currentFile = open(csv)
+    singleLine = currentFile.readline()
+    count = 0
+
+    while True:
+        singleLine = currentFile.readline()
+        if singleLine == '':
+            break
+        if singleLine[-2] == '0':
+            count += 1
+
+    return count
+
+
+
+
+
+
+
+# classifyGivenDataBOW(constants.enronBOWTestPaths[2], 3)
+classifyGivenDataBernoulli(constants.enronBerTestPaths[2], 3)
+
+
 
