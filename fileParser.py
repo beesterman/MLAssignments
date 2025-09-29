@@ -1,6 +1,7 @@
 #%%
 from constants import originalDataPath, projectDataPath, originalDataTrainingPaths, completeVocabPath, originalDataTestPaths, enronVocabPaths
 import os
+import pandas as pd
 
 # %%
 #stopword list from https://gist.github.com/sebleier/554280#file-nltk-s-list-of-english-stopwords also includes words from email data
@@ -31,6 +32,12 @@ def constructVocabulary():
 
                 singleLineTokens = cleanSingleLine(singleLine)
                 for token in singleLineTokens:
+                    #this gets rid of all the non utf-8 charecters
+                    try:
+                        token.encode("ascii", "strict")
+                    except:
+                        continue
+                    
                     if(token in vocabulary):
                         vocabulary[token] += 1
                     else:
@@ -78,6 +85,9 @@ def constructVocabulary():
                 except:
                     continue
 
+                if singleLine == '':
+                    continue
+
                 singleLineTokens = cleanSingleLine(singleLine)
                 for token in singleLineTokens:
                     if(token in vocabulary):
@@ -85,9 +95,12 @@ def constructVocabulary():
                     else:
                         vocabulary[token] = 1
 
-        print("enron" + str(enron) + " vocab size:",vocabulary.__len__())
-        for token in vocabulary:
-            currentFile.write(token + ",")
+        if("ham" in currentDirecotry):
+            print("enron" + str(enron) + " vocab size:",vocabulary.__len__())
+            for token in vocabulary:
+                currentFile.write(token + ",")
+        
+        
 
 
 
@@ -179,6 +192,13 @@ def BOWDataCreator():
                     
                     #getting all of the tokens and counting the number of times they appear in the file
                     for token in cleanedLine:
+
+                        #this gets rid of all the non utf-8 charecters
+                        try:
+                            token.encode("ascii", "strict")
+                        except:
+                            continue
+
                         if(token in vocabDict):
                             individualVocabDict[token] += 1
 
@@ -225,6 +245,12 @@ def createVocabDict(set):
 
 
     for token in splitOnlyLine:
+        #this gets rid of all the non utf-8 charecters
+        try:
+            token.encode("ascii", "strict")
+        except:
+            continue
+
         vocabDict[token] = 0
             
     return vocabDict
@@ -245,11 +271,17 @@ def createBOWFiles():
         for token in vocabDict:
             if(token == ""):
                 continue
+            #this gets rid of all the non utf-8 charecters
+            try:
+                token.encode("ascii", "strict")
+            except:
+                continue
+
             currentFile.write(token + ",")
         currentFile.write("label")
         currentFile.write("\n")
         currentFile.close()
-
+#this function creates empty Bernouli files with the complete header
 def createBernouliFiles():
     names = ["enron1_bernoulli_train.csv", "enron1_bernoulli_test.csv","enron2_bernoulli_train.csv","enron2_bernoulli_test.csv","enron4_bernoulli_train.csv","enron4_bernoulli_test.csv"]
     vocabDict = createVocabDict(0)
@@ -267,11 +299,16 @@ def createBernouliFiles():
         for token in vocabDict:
             if(token == ""):
                 continue
+            #this gets rid of all the non utf-8 charecters
+            try:
+                token.encode("ascii", "strict")
+            except:
+                continue
             currentFile.write(token + ",")
         currentFile.write("label")
         currentFile.write("\n")
         currentFile.close()
-
+#this creates the populated bernouli data files
 def bernouliDataCreator():
     
     # creating an array with all of the testing and training data paths
@@ -344,9 +381,10 @@ def bernouliDataCreator():
 # %%
 # constructVocabulary()
 # BOWDataCreator()
-bernouliDataCreator()
+# bernouliDataCreator()
 # %%
 # createBOWFiles()
 # createBernouliFiles()
+
 
 # %%
