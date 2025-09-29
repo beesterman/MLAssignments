@@ -1,12 +1,11 @@
 #%%
 from constants import originalDataPath, projectDataPath, originalDataTrainingPaths, completeVocabPath, originalDataTestPaths, enronVocabPaths
 import os
-import pandas as pd
 
 # %%
 #stopword list from https://gist.github.com/sebleier/554280#file-nltk-s-list-of-english-stopwords also includes words from email data
 stopwords = ["to","cc","am","pm","subject","i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
-punctuation = ['+','.','$','%','^','*','#','±','??','??????','????','°','???','','@','.', '!', '?', ',', ':', ';', '(', ')', '[', ']', '{', '}', "'", '"', '-', '—', '/', '...', '&']
+punctuation = ['»','¬','+','.','$','%','^','*','#','±','??','??????','????','°','???','','@','.', '!', '?', ',', ':', ';', '(', ')', '[', ']', '{', '}', "'", '"', '-', '—', '/', '...', '&']
 
 #%%
 #function pulls in all of the training data and creates one massive completeVocab.csv
@@ -90,6 +89,11 @@ def constructVocabulary():
 
                 singleLineTokens = cleanSingleLine(singleLine)
                 for token in singleLineTokens:
+                    try:
+                        token.encode("ascii", "strict")
+                    except:
+                        continue
+
                     if(token in vocabulary):
                         vocabulary[token] += 1
                     else:
@@ -377,14 +381,36 @@ def bernouliDataCreator():
 
             currentFile.close()
 
+#this function takes in the set and returns an array of the vocab
+def createVocabArray(set):
+    match set:
+        case 0: 
+            vocabFile = open(completeVocabPath)
+        case 1:
+            vocabFile = open(enronVocabPaths[set-1])
+        case 2:
+            vocabFile = open(enronVocabPaths[set-1])
+        case 3:
+            vocabFile = open(enronVocabPaths[set-1])
+    vocabLine = vocabFile.readline()
+    vocabArr = vocabLine.split(",")
+    vocabArr[-1] = vocabArr[-1].replace("\n", "")
+
+    return vocabArr
+
+
 
 # %%
+
+# createBOWFiles()
+# createBernouliFiles()
+
+
+
 # constructVocabulary()
 # BOWDataCreator()
 # bernouliDataCreator()
-# %%
-# createBOWFiles()
-# createBernouliFiles()
+# # %%
 
 
 # %%
