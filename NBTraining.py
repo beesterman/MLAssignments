@@ -190,8 +190,8 @@ def classifyGivenDataBOW(bowFile, set):
 
     totalEmails = 0
     correctEmails = 0
-    correctSpamEmails = 0
     predictedAsSpam = 0
+    correctSpamEmails = 0
 
     while True:
         singleLine = currentFile.readline()
@@ -402,7 +402,7 @@ def totalNumberOfNotSpam(csv):
 
 
 # classifyGivenDataBOW(constants.enronBOWTestPaths[2], 3)
-classifyGivenDataBernoulli(constants.enronBerTestPaths[2], 3)
+# classifyGivenDataBernoulli(constants.enronBerTestPaths[2], 3)
 
 
 
