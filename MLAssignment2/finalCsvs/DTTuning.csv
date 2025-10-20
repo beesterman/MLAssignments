@@ -1,0 +1,16 @@
+file,criteria,split,depth,accuracy,f1
+./MLAssignment2/originalData/train_c300_d100.csv,gini,random,10,0.645,0.6502463054187192
+./MLAssignment2/originalData/train_c300_d1000.csv,gini,best,5,0.652,0.6981786643538594
+./MLAssignment2/originalData/train_c300_d5000.csv,entropy,best,10,0.7375,0.7477659267800519
+./MLAssignment2/originalData/train_c500_d100.csv,log_loss,best,20,0.675,0.6889952153110048
+./MLAssignment2/originalData/train_c500_d1000.csv,gini,best,5,0.694,0.7134831460674157
+./MLAssignment2/originalData/train_c500_d5000.csv,log_loss,best,10,0.7567,0.7647229474905715
+./MLAssignment2/originalData/train_c1000_d100.csv,entropy,random,None,0.79,0.7941176470588235
+./MLAssignment2/originalData/train_c1000_d1000.csv,log_loss,best,10,0.803,0.8091085271317829
+./MLAssignment2/originalData/train_c1000_d5000.csv,entropy,best,10,0.8395,0.8437956204379562
+./MLAssignment2/originalData/train_c1500_d100.csv,gini,best,20,0.845,0.8530805687203792
+./MLAssignment2/originalData/train_c1500_d1000.csv,log_loss,random,15,0.9035,0.9067182213629773
+./MLAssignment2/originalData/train_c1500_d5000.csv,log_loss,random,10,0.9476,0.9481290833498317
+./MLAssignment2/originalData/train_c1800_d100.csv,gini,best,15,0.95,0.9519230769230769
+./MLAssignment2/originalData/train_c1800_d1000.csv,entropy,random,10,0.97,0.9699097291875627
+./MLAssignment2/originalData/train_c1800_d5000.csv,log_loss,random,None,0.9851,0.9851341913598723
