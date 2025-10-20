@@ -9,7 +9,7 @@ def hyperparamTesting():
     splitter = ["best", "random"]
     depths = [None,1,5,10,15,20]
 
-    testCSV = open(constants.basePath + "finalCsvs/" + "DTBaggingTuning.csv", "w")
+    testCSV = open(constants.basePath + "finalCsvs/" + "DTTuning.csv", "w")
     testCSV.write("file,criteria,split,depth,accuracy,f1"+ "\n")
 
     
@@ -23,6 +23,9 @@ def hyperparamTesting():
         print(filename)
         trainData = df.iloc[:,:-1]
         trainLabels = df.iloc[:,-1]
+
+        # print(trainData)
+        # print(trainLabels)
 
         for criteria in criterion:
             for split in splitter:
@@ -51,7 +54,7 @@ def hyperparamTesting():
 def testingOnData():
 
     inputFile = pd.read_csv(constants.basePath + "finalCsvs/DTTuning.csv", header=None)
-    outfile = open(constants.basePath + "finalCsvs/DTBaggingTesting.csv", "w")
+    outfile = open(constants.basePath + "finalCsvs/DTTesting.csv", "w")
     outfile.write("file,criteria,split,depth,accuracy,f1"+ "\n")
     
     i = 0
@@ -61,6 +64,7 @@ def testingOnData():
             continue
 
         print(row[0])
+        print(row[0].replace("train", "valid"))
 
         df = pd.read_csv(row[0], header=None)
         df2 = pd.read_csv(row[0].replace("train", "valid"), header=None)
@@ -90,5 +94,5 @@ def testingOnData():
 
 
 
-hyperparamTesting()
+# hyperparamTesting()
 testingOnData()
