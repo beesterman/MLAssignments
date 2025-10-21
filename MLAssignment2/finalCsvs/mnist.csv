@@ -1,4 +1,5 @@
 classifier,accuracy
-DecisionTree,0.8717
-Bagging,0.5496
-RandomForest,0.9687
+DecisionTree,0.8719
+Bagging,0.5853
+RandomForest,0.9657
+Boosting,0.9459

@@ -15,6 +15,7 @@ X_train, X_test = X[:60000], X[60000:]
 y_train, y_test = y[:60000], y[60000:]
 
 def trainDT(inFile, X_train, X_test, y_train, y_test):
+    print("begining DecisionTree")
     dt = DecisionTreeClassifier(criterion="entropy",max_depth=10)
     dt.fit(X_train, y_train)
 
@@ -25,6 +26,7 @@ def trainDT(inFile, X_train, X_test, y_train, y_test):
     inFile.write("DecisionTree," + str(accuracy) + "\n")
 
 def trainBagging(inFile, X_train, X_test, y_train, y_test):
+    print("begining Bagging")
     dt = DecisionTreeClassifier(criterion="entropy",max_depth=10)
     
     classifier = BaggingClassifier(estimator=dt,n_estimators=20,bootstrap=True,max_features=3)
@@ -38,6 +40,7 @@ def trainBagging(inFile, X_train, X_test, y_train, y_test):
 
 
 def trainRandomForest(inFile, X_train, X_test, y_train, y_test):
+    print("begining RandomForest")
     classifier = RandomForestClassifier(n_estimators=50, criterion="gini",max_depth=20)
     classifier.fit(X_train, y_train)
 
@@ -48,6 +51,7 @@ def trainRandomForest(inFile, X_train, X_test, y_train, y_test):
     inFile.write("RandomForest," + str(accuracy) + "\n")
 
 def trainBoosting(inFile, X_train, X_test, y_train, y_test):
+    print("begining Boosting")
     classifier = GradientBoostingClassifier(loss="log_loss", learning_rate=0.1,n_estimators=100)
     classifier.fit(X_train, y_train)
 
