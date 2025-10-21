@@ -1,0 +1,16 @@
+file,numOfEstimators,Bootstraping?,maxFeatures,accuracy,f1
+./MLAssignment2/originalData/train_c300_d100.csv,20,False,3,0.66,0.6666666666666666
+./MLAssignment2/originalData/train_c300_d1000.csv,20,True,3,0.6245,0.6550298576022049
+./MLAssignment2/originalData/train_c300_d5000.csv,20,True,3,0.679,0.6859714341616122
+./MLAssignment2/originalData/train_c500_d100.csv,20,False,3,0.6,0.6039603960396039
+./MLAssignment2/originalData/train_c500_d1000.csv,20,False,3,0.7275,0.7251638930912758
+./MLAssignment2/originalData/train_c500_d5000.csv,20,False,3,0.7155,0.719676815449798
+./MLAssignment2/originalData/train_c1000_d100.csv,20,False,3,0.815,0.8159203980099502
+./MLAssignment2/originalData/train_c1000_d1000.csv,20,False,3,0.8705,0.8699146157709694
+./MLAssignment2/originalData/train_c1000_d5000.csv,20,True,3,0.8773,0.8802576363813799
+./MLAssignment2/originalData/train_c1500_d100.csv,20,False,3,0.89,0.8854166666666666
+./MLAssignment2/originalData/train_c1500_d1000.csv,20,True,3,0.953,0.9533267130089375
+./MLAssignment2/originalData/train_c1500_d5000.csv,20,False,3,0.9509,0.951573133445113
+./MLAssignment2/originalData/train_c1800_d100.csv,20,False,3,0.975,0.9751243781094527
+./MLAssignment2/originalData/train_c1800_d1000.csv,20,False,3,0.965,0.9647177419354839
+./MLAssignment2/originalData/train_c1800_d5000.csv,20,False,3,0.9848,0.9848242811501597

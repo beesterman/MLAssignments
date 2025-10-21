@@ -64,7 +64,6 @@ def testingOnData():
             continue
 
         print(row[0])
-        print(row[0].replace("train", "valid"))
 
         df = pd.read_csv(row[0], header=None)
         df2 = pd.read_csv(row[0].replace("train", "valid"), header=None)
@@ -81,9 +80,9 @@ def testingOnData():
         dt =  DecisionTreeClassifier(criterion=row[1], splitter=row[2], max_depth=depth)
         dt.fit(trainData, trainLabels)
 
-        df4 = pd.read_csv(row[0].replace("train", "test"))
-        testData = df3.iloc[:,:-1]
-        testLabels = df3.iloc[:,-1]
+        df4 = pd.read_csv(row[0].replace("train", "test"), header=None)
+        testData = df4.iloc[:,:-1]
+        testLabels = df4.iloc[:,-1]
         predictedLabels = dt.predict(testData)
 
         accuracy = accuracy_score(testLabels, predictedLabels)

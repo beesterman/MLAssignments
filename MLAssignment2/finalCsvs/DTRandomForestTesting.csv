@@ -1,0 +1,16 @@
+file,numOfEstimators,criteria,maxDepth,accuracy,f1
+./MLAssignment2/originalData/train_c300_d100.csv,50,gini,10,0.685,0.676923076923077
+./MLAssignment2/originalData/train_c300_d1000.csv,50,gini,10,0.7935,0.7974497302599314
+./MLAssignment2/originalData/train_c300_d5000.csv,50,gini,20,0.8577,0.8562190562796808
+./MLAssignment2/originalData/train_c500_d100.csv,50,gini,10,0.81,0.8080808080808081
+./MLAssignment2/originalData/train_c500_d1000.csv,50,gini,10,0.8905,0.8919585594474593
+./MLAssignment2/originalData/train_c500_d5000.csv,50,gini,20,0.9211,0.9211236629011297
+./MLAssignment2/originalData/train_c1000_d100.csv,50,gini,10,0.935,0.9346733668341709
+./MLAssignment2/originalData/train_c1000_d1000.csv,50,gini,10,0.9815,0.9815828770532603
+./MLAssignment2/originalData/train_c1000_d5000.csv,50,gini,20,0.9895,0.9894821196033257
+./MLAssignment2/originalData/train_c1500_d100.csv,50,gini,10,1.0,1.0
+./MLAssignment2/originalData/train_c1500_d1000.csv,50,gini,10,1.0,1.0
+./MLAssignment2/originalData/train_c1500_d5000.csv,50,gini,10,0.9996,0.9996
+./MLAssignment2/originalData/train_c1800_d100.csv,50,gini,10,1.0,1.0
+./MLAssignment2/originalData/train_c1800_d1000.csv,50,gini,10,1.0,1.0
+./MLAssignment2/originalData/train_c1800_d5000.csv,50,gini,10,0.9999,0.9998999899989999

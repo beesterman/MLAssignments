@@ -1,0 +1,16 @@
+file,lossFunction,LearningRate,NumOfEstimators,accuracy,f1
+./MLAssignment2/originalData/train_c300_d100.csv,log_loss,0.1,50,1.0,1.0
+./MLAssignment2/originalData/train_c300_d1000.csv,log_loss,0.1,150,1.0,1.0
+./MLAssignment2/originalData/train_c300_d5000.csv,log_loss,0.1,150,0.9938,0.9938382031405287
+./MLAssignment2/originalData/train_c500_d100.csv,log_loss,0.1,50,1.0,1.0
+./MLAssignment2/originalData/train_c500_d1000.csv,log_loss,0.1,150,1.0,1.0
+./MLAssignment2/originalData/train_c500_d5000.csv,log_loss,0.1,150,0.9956,0.9956184027086238
+./MLAssignment2/originalData/train_c1000_d100.csv,log_loss,0.1,50,1.0,1.0
+./MLAssignment2/originalData/train_c1000_d1000.csv,log_loss,0.1,100,1.0,1.0
+./MLAssignment2/originalData/train_c1000_d5000.csv,exponential,0.1,150,0.9999,0.9999000099990001
+./MLAssignment2/originalData/train_c1500_d100.csv,log_loss,0.1,50,1.0,1.0
+./MLAssignment2/originalData/train_c1500_d1000.csv,log_loss,0.1,50,1.0,1.0
+./MLAssignment2/originalData/train_c1500_d5000.csv,log_loss,0.1,150,1.0,1.0
+./MLAssignment2/originalData/train_c1800_d100.csv,log_loss,0.1,50,1.0,1.0
+./MLAssignment2/originalData/train_c1800_d1000.csv,log_loss,0.1,50,1.0,1.0
+./MLAssignment2/originalData/train_c1800_d5000.csv,log_loss,0.1,100,1.0,1.0

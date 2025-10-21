@@ -1,18 +1,18 @@
 import constants
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, f1_score
-from sklearn.ensemble import BaggingClassifier
+from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 
 
 def hyperparamTesting():
-    numOfEstimators = [5,10,15,20]
-    bootstrap = [True, False]
-    maxFeatures = [1,2,3]
+    numOfEstimators = [50,100,200]
+    criterion = ["gini", "entropy", "log_loss"]
+    maxDepth = [10,20,None]
 
     inputFile = pd.read_csv(constants.basePath + "finalCsvs/DTTuning.csv", header=None)
-    testCSV = open(constants.basePath + "finalCsvs/" + "DTBaggingTuning.csv", "w")
-    testCSV.write("file,numOfEstimators,Bootstraping?,maxFeatures,accuracy,f1"+ "\n")
+    testCSV = open(constants.basePath + "finalCsvs/" + "DTRandomForestTuning.csv", "w")
+    testCSV.write("file,numOfEstimators,criteria,maxDepth,accuracy,f1"+ "\n")
 
     
     i = 0
@@ -29,28 +29,20 @@ def hyperparamTesting():
         trainData = df.iloc[:,:-1]
         trainLabels = df.iloc[:,-1]
 
-        try:
-            depth = int(row[3])
-        except: 
-            depth = None
-
-        dt =  DecisionTreeClassifier(criterion=row[1], splitter=row[2], max_depth=depth)
-
+        df2 = pd.read_csv(row[0].replace("test", "valid"),header=None)
+        validData = df2.iloc[:,:-1]
+        validLabels = df2.iloc[:,-1]
 
         # print(trainData)
         # print(trainLabels)
 
         for estimatorNum in numOfEstimators:
-            for boot in bootstrap:
-                for maxFeature in maxFeatures:
+            for criteria in criterion:
+                for mDepth in maxDepth:
                     
-                    classifier = BaggingClassifier(estimator=dt, n_estimators=estimatorNum, bootstrap=boot,max_features=maxFeature )
+                    classifier = RandomForestClassifier(n_estimators=estimatorNum, criterion=criteria,max_depth=mDepth, )
                     classifier.fit(trainData, trainLabels)
 
-
-                    df2 = pd.read_csv(row[0].replace("test", "valid"),header=None)
-                    validData = df2.iloc[:,:-1]
-                    validLabels = df2.iloc[:,-1]
 
                     validPredictLabels = classifier.predict(validData)
 
@@ -59,17 +51,16 @@ def hyperparamTesting():
 
                     if (f1 > bestF1):
                         bestF1 = f1
-                        writeHold = [row[0], estimatorNum, boot, maxFeature, accuracy, f1]
+                        writeHold = [row[0], estimatorNum, criteria, mDepth, accuracy, f1]
                     
         testCSV.write(str(writeHold[0]) + "," + str(writeHold[1]) + "," + str(writeHold[2]) + "," + str(writeHold[3]) + "," + str(writeHold[4]) + "," + str(writeHold[5]) + "\n")
 
 
 def testingOnData():
 
-    inputFile = pd.read_csv(constants.basePath + "finalCsvs/DTBaggingTuning.csv", header=None)
-    helperfile =  pd.read_csv(constants.basePath + "finalCsvs/DTTuning.csv")
-    outfile = open(constants.basePath + "finalCsvs/DTBaggingTesting.csv", "w")
-    outfile.write("file,numOfEstimators,Bootstraping?,maxFeatures,accuracy,f1"+ "\n")
+    inputFile = pd.read_csv(constants.basePath + "finalCsvs/DTRandomForestTuning.csv", header=None)
+    outfile = open(constants.basePath + "finalCsvs/DTRandomForestTesting.csv", "w")
+    outfile.write("file,numOfEstimators,criteria,maxDepth,accuracy,f1"+ "\n")
     
 
     i = 0
@@ -78,10 +69,9 @@ def testingOnData():
             i += 1
             continue
 
-        helperRow = helperfile.loc[helperfile["file"] == row[0]].iloc[0]
+
 
         print(row[0])
-        print(helperRow.iloc[1])
 
         df = pd.read_csv(row[0], header=None)
         df2 = pd.read_csv(row[0].replace("train", "valid"), header=None)
@@ -90,19 +80,14 @@ def testingOnData():
         trainData = df3.iloc[:,:-1]
         trainLabels = df3.iloc[:,-1]
 
+
         try:
-            depth = int(helperRow.iloc[3])
+            depth = int(row[3])
         except: 
             depth = None
+        
 
-        dt =  DecisionTreeClassifier(criterion=helperRow.iloc[1], splitter=helperRow.iloc[2], max_depth=depth)
-
-        if(row[2] == "True"):
-            bootstr = True
-        else:
-            bootstr = False
-
-        classifier = BaggingClassifier(estimator=dt, n_estimators=20, bootstrap=bootstr,max_features=3 )
+        classifier = RandomForestClassifier(n_estimators=int(row[1]), criterion=row[2],max_depth=depth)
         classifier.fit(trainData, trainLabels)    
 
 
