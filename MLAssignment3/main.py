@@ -11,13 +11,13 @@ torch.manual_seed(constants.seed)
 torch.cuda.manual_seed_all(constants.seed)
 
 
-lr = constants.learningRates[2]
-batchSize = constants.batchSize[2]
+lr = constants.learningRates[1]
+batchSize = constants.batchSize[1]
 optimizer = constants.optomizer[1]
-dropRate = constants.dropRates[2]
+dropRate = constants.dropRates[0]
 
 
-mlpMNIST = mlp(28*28, 1, 128, dropRate, 10)
+mlpMNIST = mlp(28*28, 5, 128, dropRate, 10)
 # mlpCIFAR10 = mlp(32*32, 1, 128, droprate, 10)
 
 
@@ -31,9 +31,9 @@ mnistTrain, mnistVal, mnistTest = getLoaders("mnist", batchSize)
 # cifar10Train, cifar10Val = torch.utils.data.random_split(cifar10Data, [.9, .1])
 
 t0 = time.time()
-trainedModel, best = trainModel(mlpMNIST, mnistTrain, mnistVal, lr, 20, device, optimizer, 5)
+trainedModel, best = trainModel(mlpMNIST, mnistTrain, mnistVal, lr, 20, device, optimizer, 10)
 runtime = (time.time()-t0)/60
 print(best[0], best[2], runtime)
 
 # printLine("type,LearningRate,BatchSize,Optomizer,DropoutRate,ValidAccuracy,Runtime")
-printLine("shallow," + str(lr) + "," + str(batchSize) + "," + str(optimizer) + "," + str(dropRate) + "," + str(best[0]) + "," + str(runtime))
+printLine("Deep," + str(lr) + "," + str(batchSize) + "," + str(optimizer) + "," + str(dropRate) + "," + str(best[0]) + "," + str(runtime))
