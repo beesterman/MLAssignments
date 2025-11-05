@@ -1,0 +1,11 @@
+This directory contains all of the files needed to run both the MLPs and CNNs however thier execution differes substancialy.
+Some things to note is taht while not required these programs do work better with a cuda enabled gpu. If not present
+it will default to using the cpu.
+
+For running mlps:
+Enter the main.py file and comment/uncomment the models and different functionalities that you would like to run.
+Simply run the file from main.py and the program will load and train the desired model.
+
+For Running CNNs:
+use the CNN.ipynb book to run it. Go to the final section of the book and this is where you can enable/disable settigns as desired
+from there you can simply run all of the cells and the program will do the rest

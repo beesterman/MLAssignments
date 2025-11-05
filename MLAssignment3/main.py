@@ -23,7 +23,7 @@ mlpCIFAR10 = mlp(3*32*32, 5, 128, dropRate, 10)
 
 
 
-train, val, test = getLoaders("anythingelse", batchSize)
+train, val, test = getLoaders("cifar10Test", batchSize)
 
 
 # t0 = time.time()
