@@ -63,17 +63,9 @@ def plot_clusters(X, labels, centers=None, title="", save_name=None, silScore="N
         plt.show()
 
 def draw_ellipse(position, covariance, ax=None, n_std=2.0, **kwargs):
-    """
-    Draw an ellipse with a given position and covariance.
-    n_std controls the radius (in standard deviations).
-    """
     ax = ax or plt.gca()
 
-    # Handle diagonal covariance (1D array)
-    if covariance.ndim == 1:
-        cov = np.diag(covariance)
-    else:
-        cov = covariance
+    cov = covariance
 
     # Eigenvalues & eigenvectors
     vals, vecs = np.linalg.eigh(cov)
@@ -92,8 +84,7 @@ def draw_ellipse(position, covariance, ax=None, n_std=2.0, **kwargs):
         width=width,
         height=height,
         angle=angle,
-        fill=False,
-        **kwargs
+        fill=False
     )
     ax.add_patch(ellipse)
 
