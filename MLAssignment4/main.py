@@ -88,7 +88,7 @@ def draw_ellipse(position, covariance, ax=None, n_std=2.0, **kwargs):
     )
     ax.add_patch(ellipse)
 
-def plot_gmm_clusters(X, labels, model, title="", save_name=None):
+def plot_gmm_clusters(X, labels, model, title="", save_name=None, silScore="None", aLogLikeley=0, bic=0, init="init", k=0):
     plt.figure(figsize=(5, 4))
     ax = plt.gca()
 
@@ -115,7 +115,7 @@ def plot_gmm_clusters(X, labels, model, title="", save_name=None):
 
         draw_ellipse(mean, cov, ax=ax, n_std=2.0, linewidth=2)
 
-    ax.set_title(title)
+    ax.set_title("k= " + str(k) +" silScore= "+ str(round(silScore, 2)) + " ALL= " + str(round(aLogLikeley, 2)) + " bic= " + str(round(bic, 2)) + " covar= " + str(init))
     ax.set_xlabel("Feature 1")
     ax.set_ylabel("Feature 2")
     plt.tight_layout()
@@ -171,12 +171,12 @@ xm, ym = make_moons(n_samples=100,random_state=SEED, noise=0.1)
 # for result in moonResults:
 #     plot_clusters(xm,result["labels"],result["centers"],silScore=result["silScore"], centerCount=result["k"], init=result["init"] )
 
-
+#this section is responsible for creating the data from the second half of the assignement
 blobResults = run_gmm(xb)
 moonResults = run_gmm(xm)
 
 # for result in blobResults:
-#     plot_gmm_clusters(xb,result["labels"],result["model"])
+#     plot_gmm_clusters(xb,result["labels"],result["model"],silScore=result["silScore"], aLogLikeley=result["avg_log_like"], bic=result["bic"], init=result["cov_type"], k=result["k"])
 
 for result in moonResults:
-    plot_gmm_clusters(xm,result["labels"],result["model"])
+    plot_gmm_clusters(xm,result["labels"],result["model"],silScore=result["silScore"], aLogLikeley=result["avg_log_like"], bic=result["bic"], init=result["cov_type"], k=result["k"])
